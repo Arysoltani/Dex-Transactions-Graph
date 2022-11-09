@@ -17,7 +17,9 @@ class DexGraph:
     def add_node(self, graph_input, token_input):
       if(not graph_input.has_node(token_input)):
             graph_input.add_node(token_input)
-
-dex_graph = DexGraph("swaps.csv")
-print(dex_graph.crypto_swaps_graph.number_of_nodes())
-print(dex_graph.crypto_swaps_graph.number_of_edges())
+    
+    def get_list_degree(self):
+        degree_node_list = self.crypto_swaps_graph.degree()
+        degree_list = [deg[1] for deg in degree_node_list]
+        degree_list.sort()
+        return degree_list
