@@ -1,0 +1,1 @@
+/usr/bin/c++ "CMakeFiles/Info_edges.out.dir/info-edges-maker.cpp.o" -o Info_edges.out  build/libSwapsReader.a 

@@ -1,5 +1,8 @@
 import pandas as pd
 import networkx as nx
+import csv
+
+COLUMN_NAME = ["node1","node2"]
 
 class DexGraph:
 
@@ -7,8 +10,8 @@ class DexGraph:
         self.crypto_swaps_graph = nx.Graph()
         df_swaps = pd.read_csv(file_path)
         for row in df_swaps.index:
-            sell_token = df_swaps[' sell token symbol'][row]
-            buy_token = df_swaps[' buy token symbol'][row]
+            sell_token = df_swaps['node1'][row]
+            buy_token = df_swaps['node2'][row]
             self.add_node(self.crypto_swaps_graph, buy_token)
             self.add_node(self.crypto_swaps_graph, sell_token)
             if(not(self.crypto_swaps_graph.has_edge(buy_token, sell_token))):
@@ -23,3 +26,16 @@ class DexGraph:
         degree_list = [deg[1] for deg in degree_node_list]
         degree_list.sort()
         return degree_list
+
+    def print(self, file_path_output):
+        graph_file = open(file_path_output, 'w')
+        graph_writer = csv.writer(graph_file)
+        graph_writer.writerow(COLUMN_NAME)
+        for edge in self.crypto_swaps_graph.edges:
+             graph_writer.writerow(edge)
+    def get_best_vertices(self, num):
+        degree_node_list = self.crypto_swaps_graph.degree()
+        degree_node = sorted(degree_node_list, key = lambda vertex: vertex[1])    
+        print(degree_node)
+# dex_graph = DexGraph("Swaps/swaps.csv")
+# dex_graph.print("Graphs/graph1.csv")

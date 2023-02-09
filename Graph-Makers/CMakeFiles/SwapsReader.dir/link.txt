@@ -1,0 +1,2 @@
+/usr/bin/ar qc build/libSwapsReader.a CMakeFiles/SwapsReader.dir/SwapsReader.cpp.o
+/usr/bin/ranlib build/libSwapsReader.a
