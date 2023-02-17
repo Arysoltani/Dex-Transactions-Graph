@@ -2,7 +2,7 @@ import pandas as pd
 import networkx as nx
 import csv
 
-COLUMN_NAME = ["node1","node2"]
+COLUMN_NAME = ["AddressToken0","AddressToken1"]
 
 class DexGraph:
 
@@ -10,8 +10,8 @@ class DexGraph:
         self.crypto_swaps_graph = nx.Graph()
         df_swaps = pd.read_csv(file_path)
         for row in df_swaps.index:
-            sell_token = df_swaps['node1'][row]
-            buy_token = df_swaps['node2'][row]
+            sell_token = df_swaps['AddressToken0'][row]
+            buy_token = df_swaps['AddressToken1'][row]
             self.add_node(self.crypto_swaps_graph, buy_token)
             self.add_node(self.crypto_swaps_graph, sell_token)
             if(not(self.crypto_swaps_graph.has_edge(buy_token, sell_token))):
