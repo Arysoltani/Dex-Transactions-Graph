@@ -9,7 +9,7 @@
 using namespace std;
 using namespace boost::multiprecision;
 
-
+int num_blocks;
 
 #define IdIndex 0
 #define AddressIndex 1
@@ -24,14 +24,23 @@ using namespace boost::multiprecision;
 #define Value 3
 #define BlockNumber 6
 
-#define ConfigPath "./config.txt"
+#define FIRST_BLOCK 10060850
+#define LAST_BLOCK 15076596
 
+int block_dis;
+
+#define ConfigPath "./config.txt"
 
 
 struct Token
 {
 	string address;
 	string name;
+};
+
+struct BlocksCountTransfer 
+{
+	vector<int>count_transfers;
 };
 
 struct PoolInfo
@@ -43,7 +52,7 @@ struct PoolInfo
     string first_block;
     string last_block;
 	string dex_name;
-	int cnt_transfer;
+	BlocksCountTransfer count_transfer;
 };
 
 
@@ -78,6 +87,15 @@ vector<string> parse_csv_line(std::string line)
 	return parsed_line;
 }
 
+int find_block(int block_now)
+{
+	int index = (block_now - FIRST_BLOCK) / block_dis;
+	if(index >= num_blocks)
+		return -1;
+	else 
+		return index;
+}
+
 std::string make_lower(std::string str)
 {
 	std::string lower_str = "";
@@ -98,7 +116,10 @@ void get_new_pool(string line, string dex_name)
 	string pool_address = make_lower(info_pool_vec[AddressIndex]);
 	Token token1 = make_token(make_lower(info_pool_vec[Token0AddressIndex]), info_pool_vec[Token0SymbolIndex]);
 	Token token2 = make_token(make_lower(info_pool_vec[Token1AddressIndex]), info_pool_vec[Token1SymbolIndex]);
-	PoolInfo* new_pool = new PoolInfo{token1, token2, 0, 0, "", "", dex_name, 0};
+	vector<int> vec_count(num_blocks, 0);
+	BlocksCountTransfer count_transfer;
+	count_transfer.count_transfers = vec_count;
+	PoolInfo* new_pool = new PoolInfo{token1, token2, 0, 0, "", "", dex_name, count_transfer};
 	info_pool[pool_address] = new_pool;
 }
 
@@ -157,7 +178,12 @@ void add_liquidity(string token_address, string from_address, string value, stri
 		pool_now->liquidity1 += multiply * value_ld;
 	else
 		pool_now->liquidity2 += multiply * value_ld;
-    pool_now->cnt_transfer += 1;
+
+	int bl_number = stoi(block_number);
+	int index = find_block(bl_number);
+
+	if(index != -1)
+    	pool_now->count_transfer.count_transfers[index] += 1;
 }
 
 void parse_transfer_info(string token_address, string from_address, string to_address,
@@ -195,6 +221,7 @@ void print_pools_dex(string dex_name, string output_dir,
 	string output_file = output_dir + "/" + dex_name + ".csv";
 	ofstream output_stream(output_file);
 	output_stream << "PoolAddress,FirstBlock,LastBlock,LiquidityToken0,LiquidityToken1,AddressToken0,SymbolToken0,AddressToken1,SymbolToken1,CntTransfer" << endl;
+	
 	for(int i = 0; i < sorted_pools.size(); i++)
 	{
 		PoolInfo* pool_now = sorted_pools[i].second.second;
@@ -227,11 +254,15 @@ int main()
 
 	ifstream config_stream(ConfigPath);
 
-	std::string transfer_file_path, pools_dir, output_dir;
+	std::string transfer_file_path, pools_dir, output_dir, str_blocks;
 
     getline(config_stream, transfer_file_path);
 	getline(config_stream, pools_dir);
 	getline(config_stream, output_dir);
+	getline(config_stream, str_blocks);
+
+	num_blocks = stoi(str_blocks);
+	block_dis = (LAST_BLOCK - FIRST_BLOCK) / (num_blocks + 1);
 
 	transfer_file_path.pop_back();
 	pools_dir.pop_back();

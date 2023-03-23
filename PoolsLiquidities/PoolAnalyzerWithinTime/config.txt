@@ -1,3 +1,4 @@
-FilteredTransfers.csv
-Pools
-LiquidityPools
+../FilteredTransfers.csv
+../Pools
+../LiquidityPoolsWithinTime
+100
