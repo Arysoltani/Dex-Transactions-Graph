@@ -1,0 +1,17 @@
+SushiSwap graph non-giant components' info:
+[2369, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2]
+CT1,CSC
+DGCL,ACXT
+DOGEN,dUSD
+ROOT,KETH
+OLLI,DM
+OilMoney,RecovEarth
+RC_DAI_0.25_TRIBE_2021_4_30,TRIBE
+SWISE,sETH2
+TIDE,USDD
+VEDA,XCHF
+VGX,NRC
+dBORING,BORING,eBORING
+UBQ,uAD
+USxD,xAAPL
+yvUSDT,yvWETH
